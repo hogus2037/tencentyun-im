@@ -163,7 +163,7 @@ use Hogus\Tencent\Tim\Messages\Text;
 
 $text = new Text('您好');
 
-$tim->opemim->message($text)->from('from')->to('to')->send(); // 单发单聊
-$tim->opemim->message($text)->from('from')->to(['to1','to2'])->send(); // 批量发单聊
+$tim->openim->message($text)->from('from')->to('to')->send(); // 单发单聊
+$tim->openim->message($text)->from('from')->to(['to1','to2'])->send(); // 批量发单聊
 
 ```
