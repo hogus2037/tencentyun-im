@@ -26,9 +26,8 @@ $tim = app('tim');
 - [x] [群组](docs/group.md)
 - [x] [群组会员](docs/group_member.md)
 - [x] [消息](docs/message.md)
-- [x] [消息](docs/message.md)
 - [ ] [资料](docs/profile.md)
-- [ ] [关系](docs/sns.md)
+- [ ] [关系链](docs/sns.md)
 
 ## Related
 
