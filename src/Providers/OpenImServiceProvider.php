@@ -13,7 +13,7 @@ class OpenImServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $app['opemim'] = function ($app) {
+        $app['openim'] = function ($app) {
             return new OpenimClient($app);
         };
     }

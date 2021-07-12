@@ -11,6 +11,7 @@ use Hogus\Tencent\Tim\Clients\OpenimClient;
 use Hogus\Tencent\Tim\Providers\AccountServiceProvider;
 use Hogus\Tencent\Tim\Providers\GroupMemberServiceProvider;
 use Hogus\Tencent\Tim\Providers\GroupServiceProvider;
+use Hogus\Tencent\Tim\Providers\OpenImServiceProvider;
 use Hogus\Tencent\Tim\Providers\UserSigServiceProvider;
 
 /**
@@ -30,5 +31,6 @@ class Application extends ServiceContainer
         AccountServiceProvider::class,
         GroupServiceProvider::class,
         GroupMemberServiceProvider::class,
+        OpenImServiceProvider::class,
     ];
 }
