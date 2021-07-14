@@ -5,6 +5,7 @@ namespace Hogus\Tencent\Tim\Clients;
 
 
 use Hogus\Tencent\Tim\Formats\Formatter;
+use Hogus\Tencent\Tim\Formats\FormatterInterface;
 use Hogus\Tencent\Tim\Formats\GroupFormatter;
 use Hogus\Tencent\Tim\GroupMessenger;
 use Hogus\Tencent\Tim\Messages\Message;
@@ -18,7 +19,7 @@ use Hogus\Tencent\Tim\Supports\Filter;
  *
  * @package Hogus\Tencent\Tim\Clients
  */
-class GroupClient extends BaseClient implements MessageClientInterface
+class GroupClient extends BaseClient implements MessageClientInterface, FormatterInterface
 {
     /**
      * get
@@ -153,7 +154,7 @@ class GroupClient extends BaseClient implements MessageClientInterface
      *
      * @return GroupFormatter
      */
-    public function formatter(array $attributes = []): GroupFormatter
+    public function formatter(array $attributes = []): Formatter
     {
         return new GroupFormatter($this, $attributes);
     }
@@ -199,8 +200,51 @@ class GroupClient extends BaseClient implements MessageClientInterface
     public function destroy($group_id)
     {
         return $this->httpPostJson('group_open_http_svc/destroy_group', [
-            'GroupId' => $group_id
+            'GroupId' => (string)$group_id
         ]);
+    }
+
+    /**
+     * 转入群主
+     *
+     * @param $group_id
+     * @param $owner_id
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function change($group_id, $owner_id)
+    {
+        return $this->httpPostJson('group_open_http_svc/change_group_owner', [
+            'GroupId' => (string)$group_id,
+            'NewOwner_Account' => (string)$owner_id
+        ]);
+    }
+
+    /**
+     * 导入群资料
+     *
+     * @param array $data
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function import(array $data)
+    {
+        return $this->httpPostJson('group_open_http_svc/import_group', $data);
+    }
+
+    /**
+     * 导入群消息
+     *
+     * @param array $data
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function import_msg(array $data)
+    {
+        return $this->httpPostJson('group_open_http_svc/import_group_msg', $data);
     }
 
     /**
@@ -267,7 +311,7 @@ class GroupClient extends BaseClient implements MessageClientInterface
     public function notification($group_id, string $content, array $member_id = [])
     {
         return $this->httpPostJson('group_open_http_svc/send_group_system_notification', [
-            'GroupId' => $group_id,
+            'GroupId' => (string)$group_id,
             'Content' => $content,
             'ToMembers_Account' => $member_id
         ]);
@@ -286,7 +330,7 @@ class GroupClient extends BaseClient implements MessageClientInterface
     public function forbid($group_id, $member_id, int $shut_up_time)
     {
         return $this->httpPostJson('group_open_http_svc/forbid_send_msg', [
-            'GroupId' => $group_id,
+            'GroupId' => (string)$group_id,
             'ShutUpTime' => $shut_up_time,
             'Members_Account' => (array)$member_id
         ]);
@@ -303,7 +347,101 @@ class GroupClient extends BaseClient implements MessageClientInterface
     public function get_online_member_num($group_id)
     {
         return $this->httpPostJson('group_open_http_svc/get_online_member_num', [
-            'GroupId' => $group_id,
+            'GroupId' => (string)$group_id,
+        ]);
+    }
+
+    /**
+     * 获取被禁言群成员列表
+     *
+     * @param $group_id
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function shutted_list($group_id)
+    {
+        return $this->httpPostJson('group_open_http_svc/get_group_shutted_uin', [
+            'GroupId' => (string)$group_id,
+        ]);
+    }
+
+    /**
+     * 撤回群消息
+     *
+     * @param $group_id
+     * @param $seq
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function recall_msg($group_id, $seq)
+    {
+        return $this->httpPostJson('group_open_http_svc/group_msg_recall', [
+            'GroupId' => (string)$group_id,
+            'MsgSeqList' => array_map(function ($seq) {
+                return ['MsgSeq' => $seq];
+            }, (array)$seq)
+        ]);
+    }
+
+    /**
+     * 拉取群历史消息
+     *
+     * @param     $group_id
+     * @param int $seq
+     * @param int $num
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get_msg_list($group_id, int $seq = 0, int $num = 20)
+    {
+        $data = [
+            'GroupId' => (string)$group_id,
+            'ReqMsgNumber' => min($num, 20)
+        ];
+
+        if ($seq > 0) {
+            $data['ReqMsgSeq'] = $seq;
+        }
+
+        return $this->httpPostJson('group_open_http_svc/group_msg_get_simple', $data);
+    }
+
+    /**
+     * 删除指定用户发送的消息
+     *
+     * @param $group_id
+     * @param $member_id
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete_msg_by_sender($group_id, $member_id)
+    {
+        return $this->httpPostJson('group_open_http_svc/delete_group_msg_by_sender', [
+            'GroupId' => (string)$group_id,
+            'Sender_Account' => (string)$member_id,
+        ]);
+    }
+
+    /**
+     * 设置成员未读消息计数
+     *
+     * @param     $group_id
+     * @param     $member_id
+     * @param int $num
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function set_unread_msg_num($group_id, $member_id, int $num)
+    {
+        return $this->httpPostJson('group_open_http_svc/set_unread_msg_num', [
+            'GroupId' => (string)$group_id,
+            'Member_Account' => (string)$member_id,
+            'UnreadMsgNum' => $num,
         ]);
     }
 }

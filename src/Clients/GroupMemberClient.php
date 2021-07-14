@@ -178,4 +178,26 @@ class GroupMemberClient extends BaseClient
             'ShutUpTime' => $shut_up_time
         ]);
     }
+
+    /**
+     * 查询用户在群组中的身份
+     *
+     * @param $group_id
+     * @param $member_id
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function role($group_id, $member_id)
+    {
+        return $this->httpPostJson('group_open_http_svc/get_role_in_group', [
+            'GroupId' => (string)$group_id,
+            'User_Account' => (array)$member_id
+        ]);
+    }
+
+    public function joined($group_id, $member_id)
+    {
+        return $this->httpPostJson('group_open_http_svc/get_joined_group_list', '');
+    }
 }

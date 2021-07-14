@@ -201,4 +201,9 @@ class GroupFormatter extends Formatter
     {
         return $this->client->update($this->transformForJsonRequest());
     }
+
+    public function import()
+    {
+        return $this->client->import($this->transformForJsonRequest());
+    }
 }

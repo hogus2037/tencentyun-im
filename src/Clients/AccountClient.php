@@ -28,6 +28,40 @@ class AccountClient extends BaseClient
     }
 
     /**
+     * 导入多个账号
+     *
+     * @param $userid
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function multi_import($userid)
+    {
+        return $this->httpPostJson('im_open_login_svc/multiaccount_import', [
+            'Accounts' => (array) $userid
+        ]);
+    }
+
+    /**
+     * 删除账号
+     *
+     * @param $userid
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete($userid)
+    {
+        $data = [
+            'DeleteItem' => array_map(function ($uid) {
+                return ['UserID' => (string)$uid];
+            }, (array) $userid)
+        ];
+
+        return $this->httpPostJson('im_open_login_svc/account_delete', $data);
+    }
+
+    /**
      * 查询
      *
      * @param $member_id

@@ -4,7 +4,6 @@
 namespace Hogus\Tencent\Tim\Formats;
 
 
-use Hogus\Tencent\Tim\Clients\GroupClient;
 use Hogus\Tencent\Tim\Supports\HasAttributes;
 
 class Formatter
@@ -15,7 +14,7 @@ class Formatter
 
     protected $client;
 
-    public function __construct(GroupClient $client, array $attributes = [])
+    public function __construct(FormatterInterface $client, array $attributes = [])
     {
         $this->client = $client;
 

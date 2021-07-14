@@ -11,7 +11,7 @@ abstract class Paginator
 {
     protected $limit = 15;
 
-    protected $offset;
+    protected $offset = 0;
 
     protected $wheres = [];
 
