@@ -125,4 +125,21 @@ $group->forbid($group_id, $member_id, int $shut_up_time)
 $group->get_online_member_num($group_id);
 ```
 
+## 获取用户所加入的群组
+
+```php
+use Hogus\Tencent\Tim\Pagination\JoinGroupPaginator;
+
+$group->get_joined_group_list($data);
+
+//or
+$paginator = new JoinGroupPaginator($group);
+
+$paginator
+->where('member', 'to1') // 用户ID 必填
+//->where('type', 'Public') // 指定群组形态 不填为拉取所有
+//->with('live', 'work') //  指定拉取 live：直播群，work：工作群
+->paginate();
+```
+
 ## [发送消息](message.md)
