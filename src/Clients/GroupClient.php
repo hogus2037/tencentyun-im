@@ -444,4 +444,17 @@ class GroupClient extends BaseClient implements MessageClientInterface, Formatte
             'UnreadMsgNum' => $num,
         ]);
     }
+
+    /**
+     * 获取用户所加入的群组
+     *
+     * @param array $data
+     *
+     * @return array|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get_joined_group_list(array $data)
+    {
+        return $this->httpPostJson('group_open_http_svc/get_joined_group_list', $data);
+    }
 }
